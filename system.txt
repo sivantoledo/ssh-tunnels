@@ -1,0 +1,4 @@
+PROXY=tunnels.yourdomain.com
+ISSUES=githubuser/githubrepo
+CLIENTID_SUFFIX=.youdomain.com
+BROKER=xyz1w2abcdefg-ats.iot.eu-central-1.amazonaws.com
