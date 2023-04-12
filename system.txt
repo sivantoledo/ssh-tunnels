@@ -1,3 +1,4 @@
+REALM=atlas
 PROXY=tunnels.yourdomain.com
 ISSUES=githubuser/githubrepo
 CLIENTID_SUFFIX=.youdomain.com

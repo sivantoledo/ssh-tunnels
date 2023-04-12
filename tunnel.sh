@@ -22,7 +22,7 @@ if [ "$#" -lt 1 ]; then
     echo ""
     echo "  commands:"
     echo "    gh-auth TOKEN"
-    echo "    prepare REALM SYSTEM DEVICE"
+    echo "    prepare SYSTEM DEVICE"
     echo "    ssh-keygen"
     echo "    ssh-upload"
     echo "    ssh-getpub"
@@ -101,6 +101,7 @@ fi
 
 if [ $COMMAND == "proxy-update-pubs" ]; then
     sudo java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-ssh-authorize-proxy $ISSUES $2
+    exit
 fi
 
 if [ $COMMAND == "proxy-update-pubs-xxx" ]; then
@@ -158,15 +159,13 @@ if [ $COMMAND == "proxy-update-pubs-xxx" ]; then
 fi
 
 if [ $COMMAND == "prepare" ]; then
-    if [ "$#" -lt 4 ]; then
-	echo "$0 $COMMAND realm system device"
-	echo "  realm is usually atlas"
+    if [ "$#" -lt 3 ]; then
+	echo "$0 $COMMAND system device"
 	exit
     fi
     
-    REALM=$2
-    SYSTEM=$3
-    DEVICE=$4
+    SYSTEM=$2
+    DEVICE=$3
 
     rm properties.txt
     touch properties.txt
@@ -208,17 +207,6 @@ fi
 source properties.txt
 
 echo "Running $COMMAND for device $DEVICE.$SYSTEM.$REALM"
-#exit
-
-#if [ "$#" -lt 4 ]; then
-#    echo "$0 $COMMAND realm system device"
-#    echo "  realm is usually atlas"
-#    exit
-#fi
-
-#REALM=$2
-#SYSTEM=$3
-#DEVICE=$4
 
 if [ $COMMAND == "ssh-test" ]; then
   echo ssh $SYSTEM@$PROXY -i $sshPrivateKey "whoami"
@@ -243,7 +231,7 @@ if [ $COMMAND == "ssh-upload" ]; then
 fi
 
 if [ $COMMAND == "x509-keygen" ]; then
-  echo openssl req -subj /CN=$DEVICE.$SYSTEM.$REALM.wildlifetracking.net/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $DEVICE.$SYSTEM.$REALM.x509key -nodes -out $DEVICE.$SYSTEM.$REALM.csr -verbose
+  echo openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
   openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
   java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $certificateRequest
   #gh issue create --repo $ISSUES --body-file $certificateRequest --title $certificateRequest
@@ -288,7 +276,7 @@ if [ $COMMAND == "disconnect" ]; then
 	exit
     fi
     TARGET=$2
-    echo "Trying to disconnect reverse-SSH tunnel to $TARGET.SYSTEM.REALM" 
+    echo "Trying to disconnect reverse-SSH tunnel to $TARGET.$SYSTEM.$REALM" 
     java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect $TARGET 
     exit
 fi

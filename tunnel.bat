@@ -64,9 +64,8 @@ IF "%ghauth%"=="true" (
 )
 
 
-SET REALM=%2
-SET SYSTEM=%3
-SET DEVICE=%4
+SET SYSTEM=%2
+SET DEVICE=%3
 
 IF "%prepare%"=="true" (
   ECHO %DEVICE%.%SYSTEM%.%REALM%
