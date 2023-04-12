@@ -196,7 +196,7 @@ if [ $COMMAND == "prepare" ]; then
     #echo "  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar listen" >> loop.sh
     #echo "  sleep 10"                                  >> loop.sh
     #echo "done"                                        >> loop.sh
-    #exit
+    exit
 fi
 
 if [ ! -f properties.txt ]; then
