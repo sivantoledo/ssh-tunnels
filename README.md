@@ -63,9 +63,9 @@ Running `connect.sh` now will fail to establish a connection to the remote compu
 
 Now let's see how you set up the remote and controlling computers in the first place.
 
-#### Get and Unpack the Software
+##### Get and Unpack the Software
 
-#### Configure the Software for the Remote or Controlling Computer
+##### Configure the Software for the Remote or Controlling Computer
 
 
 
