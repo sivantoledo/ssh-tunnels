@@ -273,18 +273,18 @@ fi
 
 if [ $COMMAND == "connect" ]; then
     if [ "$#" -lt 2 ]; then
-	echo "$0 $COMMAND target-device"
+	echo "$0 $COMMAND user@remote-computer"
 	exit
     fi
     TARGET=$2
     echo "Trying to create reverse-SSH tunnel to $TARGET.SYSTEM.REALM" 
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar connect $TARGET $REALM $sshPrivateKey
+    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar connect $TARGET $sshPrivateKey
     exit
 fi
 
 if [ $COMMAND == "disconnect" ]; then
     if [ "$#" -lt 2 ]; then
-	echo "$0 $COMMAND target-device"
+	echo "$0 $COMMAND remote-computer"
 	exit
     fi
     TARGET=$2

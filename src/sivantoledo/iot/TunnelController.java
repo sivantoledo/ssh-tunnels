@@ -114,19 +114,24 @@ public class TunnelController {
     String tunnelProxyKey    = props.getProperty("sshProxyKey");
     int    tunnelProxyPort   = Integer.parseInt( props.getProperty("sshProxyPort","-1") );
     
-    String sshUser           = props.getProperty("sshTargetUser");
-    String sshId             = props.getProperty("sshTargetKey");
+    //String sshUser           = props.getProperty("sshTargetUser");
+    //String sshId             = props.getProperty("sshTargetKey");
     
-    if (args.length >= 3) sshUser = args[2];
-    if (args.length >= 4) sshId   = args[3];
+    //if (args.length >= 3) sshUser = args[2];
+    //if (args.length >= 4) sshId   = args[3];
 
     //Tunnel tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, tunnelProxyPort /* -1 requests a random port */, tunnelProxyKey);
     
+    //if (args.length < 1) {
+    //  System.out.printf("you must supply at least one argument: connect/disconnect\n");
+    //  return;
+    //}
+
     if (args.length < 1) {
       System.out.printf("you must supply at least one argument: connect/disconnect\n");
       return;
     }
-    
+  
     boolean tunnelState;
     
     if (args[0].equalsIgnoreCase("connect")) tunnelState = true;
@@ -140,23 +145,45 @@ public class TunnelController {
     //  System.out.printf("to connect supply more arguments: connect target ssh-user-name ssh-id-file\n");
     //  return;
     //}
+    
+    String sshUser = null;
+    String sshId   = null;
+    String remoteDevice = null;
 
-    if (tunnelState && args.length < 2) {
-      System.out.printf("to connect specify target (and possibly user and key): connect target [ssh-user-name] [ssh-id-file]\n");
-      return;
+    if (tunnelState) {
+      if (args.length < 3) {
+        System.out.printf("to connect specify user@target and key\n");
+        return;
+      } else {
+        var splits = args[1].split("@");
+        if (splits.length!=2) {
+          System.out.printf("to connect specify user@target and key\n");
+          return;
+        }
+        sshUser      = splits[0];
+        remoteDevice = splits[1];
+        sshId        = args[2];
+      }
     }
-
+    
     if (!tunnelState && args.length < 2) {
       System.out.printf("to disconnect specify target: disconnect target\n");
       return;
+    } else {
+      var splits = args[1].split("@");
+      if (splits.length==2) {
+        remoteDevice = splits[1]; // user@target
+      } else {
+      remoteDevice = splits[1];   // target without a user name and @
     }
+  }
 
-    if (tunnelState && (sshUser==null || sshId==null)) {
-      System.out.printf("to connect specify target and possibly user and key (or user and key via properties.txt): connect target ssh-user-name ssh-id-file\n");
-      return;
-    }
+    //if (tunnelState && (sshUser==null || sshId==null)) {
+    //  System.out.printf("to connect specify target and possibly user and key (or user and key via properties.txt): connect target ssh-user-name ssh-id-file\n");
+    //  return;
+    //}
 
-    String remoteDevice = args[1];
+    //String remoteDevice = args[1];
 
     //System.out.printf("system   = %s\n", system);
     System.out.printf("clientId = %s\n", myClientId);

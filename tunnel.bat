@@ -99,11 +99,11 @@ set TARGET=%2
 IF "%connect%"=="true" (
   ECHO CONNECT
   if "%~2"=="" (
-    ECHO Missing argument: connect TARGET
+    ECHO Missing argument: connect user@target
     goto :eof
   )
   ::java -jar jars/sivantoledo-iot.jar connect %TARGET% %REALM% %sshPrivateKey%
-  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar connect %TARGET% %REALM% %sshPrivateKey%
+  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar connect %TARGET% %sshPrivateKey%
   goto :eof
 )
 
