@@ -217,14 +217,14 @@ fi
 if [ $COMMAND == "ssh-keygen" ]; then
   echo "creating $sshPrivateKey with comment $shortId"
   ssh-keygen -N "" -f $sshPrivateKey -C $shortId
-  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-get-issue $ISSUES $sshPublicKey
+  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $sshPublicKey
   #gh issue create --repo $ISSUES --body-file $sshPublicKey --title $sshPublicKey
   #echo "Uploaded $sshPublicKey"
   exit
 fi
 
 if [ $COMMAND == "ssh-upload" ]; then
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-get-issue $ISSUES $sshPublicKey
+    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $sshPublicKey
     #gh issue create --repo $ISSUES --body-file $sshPublicKey --title $sshPublicKey
     #echo "Uploaded $sshPublicKey"
     exit
