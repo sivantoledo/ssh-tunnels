@@ -103,6 +103,11 @@ public class TunnelExecutor {
 
     tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, tunnelProxyPort /* -1 requests a random port */, tunnelProxyKey);
     
+    if (tunnelProxyPort > 0) {
+      tunnel.start(); // always-on tunnel, not on demand
+      return;         // hopefully another thread will persist
+    }
+    
     //System.out.printf("system   = %s\n", system);
     //System.out.printf("clientId = %s\n", myClientId);
     //System.out.printf("sshId = %s\n", sshId);
