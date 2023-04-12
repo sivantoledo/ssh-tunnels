@@ -105,7 +105,12 @@ public class TunnelExecutor {
     
     if (tunnelProxyPort > 0) {
       tunnel.start(); // always-on tunnel, not on demand
-      return;         // hopefully another thread will persist
+      
+      while (true) {
+        try {
+          Thread.sleep(3600*1000);
+        } catch (InterruptedException e1) {}
+      }
     }
     
     //System.out.printf("system   = %s\n", system);

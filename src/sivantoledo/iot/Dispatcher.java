@@ -19,8 +19,7 @@ public class Dispatcher {
     }
     if (args[0].contentEquals("connect") || args[0].contentEquals("disconnect")) TunnelController.main(args);
     else if (args[0].contentEquals("listen")) TunnelExecutor.main(args);
-    
-    if (args[0].contentEquals("delete-certificate")) sivantoledo.aws.IotCertificate.delete(args);
+    else if (args[0].contentEquals("delete-certificate")) sivantoledo.aws.IotCertificate.delete(args);
     else if (args[0].contentEquals("list-certificates"))  sivantoledo.aws.IotCertificate.list(args);
     //else if (args[0].contentEquals("sign-certificate"))   SignCertificate. main(args);
     //else if (args[0].contentEquals("create-zip"))    CreateZip.main(args);
