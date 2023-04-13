@@ -36,7 +36,6 @@ In the rest of this document, we use as an example a system called `hula` that i
 
 Once you have set up the remote and controlling computers, you will have a directory on the controlling computer with both the software and the configuration files to connect to remote computers. If this directory is `~/tunnel`, say, you issue the command `./tunnel.sh connect atlas@972002000333` to connect to the remote computer. When you exit from the shell on the remote computer, the softare tells the remote connection to close the SSH tunnel.
 
-```bash
     sivan@sivanlap:~/tunnel$ ./tunnel.sh connect atlas@972002000333
     >>> atlas/hula/primary/tunnel/control: connect
         sent
@@ -55,7 +54,6 @@ Once you have set up the remote and controlling computers, you will have a direc
         sent
     <<< atlas/hula/primary/tunnel/state: disconnected
         disconnected
-```
 
 Note that the host name of the remote computer appears to be `tau-333`, not `972002000333`. The names of remote computers in this software are not necessarily their host names.
 
