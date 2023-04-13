@@ -242,7 +242,6 @@ public class TunnelController {
       } while (state.get() != tunnelState);
       
       System.out.printf("!!! remote state consistent, exiting\n");
-      connection.awsIotClient.disconnect();
       
       if (tunnelState && port.get()<0) {
         System.out.printf("connected but port number not provided\n");
@@ -254,8 +253,27 @@ public class TunnelController {
 
         Tunnel tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, port.get(), tunnelProxyKey);
         tunnel.writeScript(sshUser, sshId);
-        //writeScript(system, sshUser);
+        tunnel.connect(sshUser, sshId);
+         //writeScript(system, sshUser);
       }
+      
+      // now disconnect
+      
+      tunnelState = false;
+      
+      do {
+        String payload = "disconnect";
+        System.out.printf(">>> %s: %s\n", controlTopic, payload);
+        connection.awsIotClient.publish(controlTopic, payload);
+        System.out.printf("... sent\n");
+      
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
+      } while (state.get() != tunnelState);
+
+      connection.awsIotClient.disconnect();
       
       } catch (AWSIotException ce) {
       System.err.printf("exception: %s\n", ce.getMessage());

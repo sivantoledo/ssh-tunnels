@@ -88,12 +88,47 @@ public class Tunnel {
     builder.redirectError(Redirect.INHERIT);
     //System.out.printf("ssh built 3\n");
     try {
-      System.out.printf("ssh starting: %s\n",builder.toString());
+      System.out.printf("ssh starting connection to proxy\n");
       process = builder.start();
-      System.out.printf("ssh started\n");
+      System.out.printf("ssh to proxy started\n");
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+  
+  public void connect(String remoteUser, String remoteKeyFile) {
+    String proxyCommand = String.format("ProxyCommand=ssh -W %%h:%%p %s@%s -i %s",user,host,keyFile);
+    String knownHostsFile="UserKnownHostsFile="+devNull;
+    ProcessBuilder builder = 
+        new ProcessBuilder("ssh",
+            "-o",proxyCommand,
+            "-o","StrictHostKeyChecking=no",
+            "-o",knownHostsFile,
+            "-o",proxyCommand,
+            remoteUser+"@localhost",
+            "-p",Integer.toString(defaultPort), // weird; should be port I think
+            "-i",remoteKeyFile);
+    
+    System.out.printf("ssh command: ");
+    for (String p: builder.command()) System.out.print(p+" "); System.out.println();
+    //builder.inheritIO();
+    builder.redirectInput(Redirect.INHERIT);
+    builder.redirectOutput(Redirect.INHERIT);
+    builder.redirectError(Redirect.INHERIT);
+    try {
+      System.out.printf("ssh starting connection to remote target\n");
+      process = builder.start();
+      System.out.printf("ssh to remote target started\n");
+      
+      while (process.isAlive()) {
+        try {
+          process.waitFor();
+        } catch (InterruptedException e) {}
+      }
+   } catch (IOException e) {
+     e.printStackTrace();
+   }
+
   }
   
   public void writeScript(String remoteUser, String remoteKeyFile) {
