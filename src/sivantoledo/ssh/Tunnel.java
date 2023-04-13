@@ -101,17 +101,17 @@ public class Tunnel {
     String knownHostsFile="UserKnownHostsFile="+devNull;
     ProcessBuilder builder = 
         new ProcessBuilder("ssh",
-            "-o",proxyCommand,
+            "-o",""+proxyCommand,
             "-o","StrictHostKeyChecking=no",
-            "-o",knownHostsFile,
-            "-o",proxyCommand,
-            remoteUser+"@localhost",
+            "-o",""+knownHostsFile,
             "-p",Integer.toString(defaultPort), // weird; should be port I think
-            "-i",remoteKeyFile);
+	    "-i",""+remoteKeyFile,
+	    remoteUser+"@localhost");
     
     System.out.printf("ssh command: ");
-    for (String p: builder.command()) System.out.print(p+" "); System.out.println();
-    //builder.inheritIO();
+    for (String p: builder.command()) System.out.printf("{%s} ",p); System.out.println();
+    //System.exit(1);
+    builder.inheritIO();
     builder.redirectInput(Redirect.INHERIT);
     builder.redirectOutput(Redirect.INHERIT);
     builder.redirectError(Redirect.INHERIT);
@@ -128,6 +128,9 @@ public class Tunnel {
    } catch (IOException e) {
      e.printStackTrace();
    }
+
+    System.out.printf("ssh command: ");
+    for (String p: builder.command()) System.out.printf("{%s} ",p); System.out.println();
 
   }
   
