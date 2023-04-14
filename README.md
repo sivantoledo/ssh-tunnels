@@ -30,15 +30,15 @@ The SSH connection between a controlling computer and a remote computer uses two
 
 Within each system, each remote or controlling computer must have a unique name. The system distinguishes between devices and controllers by their names; the name of a controlling computer must start with the word *controller*. The names need not be identical to the host names; they are internal to this tunneling mechanism. The only difference between remote and controlling computers is that controlling computers can send `connect` and `disconnecct` commands to remote computers in the system; remote computers cannot.
 
-In the rest of this document, we use as an example a system called `hula` that is part of the realm `atlas`, a remote computer that we name `972002000333`, and a controlling computer that we name `controller-sivanlap`.
+In the rest of this document, we use as an example a system called `hula` that is part of the realm `atlas`, a remote computer that we name `atlas-333`, and a controlling computer that we name `controller-sivanlap`.
 
 We begin with instructions to system administrators; individuals who manage a group of remote and controlling computers, using a realm that is already functional. The instructions for creating and managing realms appear later.
 
 ## Instructions for System Administrators
 
-Once you have set up the remote and controlling computers, you will have a directory on the controlling computer with both the software and the configuration files to connect to remote computers. If this directory is `~/tunnel`, say, you issue the command `./tunnel.sh connect atlas@972002000333` to connect to the remote computer. When you exit from the shell on the remote computer, the softare tells the remote connection to close the SSH tunnel.
+Once you have set up the remote and controlling computers, you will have a directory on the controlling computer with both the software and the configuration files to connect to remote computers. If this directory is `~/tunnel`, say, you issue the command `./tunnel.sh connect atlas@atlas-333` to connect to the remote computer. When you exit from the shell on the remote computer, the softare tells the remote connection to close the SSH tunnel.
 
-    sivan@sivanlap:~/tunnel$ ./tunnel.sh connect atlas@972002000333
+    sivan@sivanlap:~/tunnel$ ./tunnel.sh connect atlas@atlas-333
     >>> atlas/hula/primary/tunnel/control: connect
         sent
     <<< atlas/hula/primary/tunnel/state: connected|port=63943
@@ -57,7 +57,7 @@ Once you have set up the remote and controlling computers, you will have a direc
     <<< atlas/hula/primary/tunnel/state: disconnected
         disconnected
 
-Note that the host name of the remote computer appears to be `tau-333`, not `972002000333`. The names of remote computers in this software are not necessarily their host names.
+In this case the name of the target remote computer, `atlas-333`, is the same as its host name. This is a useful convention, but in principle the two names can be different.
 
 Now let's see how you set up the remote and controlling computers in the first place.
 
@@ -97,7 +97,7 @@ The same `tunnel.sh` or `tunnel.bat` script runs almost all the commands that th
 
 Next, set up the directory for a particular device or controller and create authentication keys . The commands are exactly under Linux and Windows (with the exception of the script name, of course).
 
-    ./tunnel.sh prepare hula 972001333
+    ./tunnel.sh prepare hula $HOSTNAME
     ./tunnel.sh ssh-keygen
     ./tunnel.sh x509-keygen
     
@@ -105,7 +105,7 @@ The first command creates a file called `properties.txt` that specifies all the 
 
     ./tunnel.sh list
 
-You should see two new files in the repository, entitled `972001333.hula.atlas.sshkey.pub` and `972001333.hula.atlas.x509.csr`.
+You should see two new files in the repository, entitled `atlas-333.hula.atlas.sshkey.pub` and `atlas-333.hula.atlas.x509.csr`.
 
 Run similar commands on the controlling computer, giving it a name that starts with the word `controller`. In our example, the name is `controller-sivanlap`.
 
