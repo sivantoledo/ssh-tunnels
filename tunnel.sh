@@ -161,13 +161,61 @@ if [ $COMMAND == "proxy-update-pubs-xxx" ]; then
 fi
 
 if [ $COMMAND == "prepare" ]; then
-    if [ "$#" -lt 3 ]; then
-	echo "$0 $COMMAND system device"
-	exit
-    fi
-    
     SYSTEM=$2
     DEVICE=$3
+
+    if [[ $ALLOCATOR == hostname ]] && [[ ! ${DEVICE}x =~ .*controller.* ]]; then
+	if [ "$#" -lt 2 ]; then
+	    echo "$0 $COMMAND system"
+	    exit
+	fi
+    
+	VSTART=ALLOCATION_START_${SYSTEM}
+	VEND=ALLOCATION_END_${SYSTEM}
+	START=${!VSTART}
+	END=${!VEND}
+	if [[ $START =~ ^[1-9][0-9]*$ ]]; then
+	    echo Port allocation for $SYSTEM starts at $START
+	else
+	    echo Missing port allocation for system $SYSTEM
+	    exit
+	fi
+	if [[ $END =~ ^[1-9][0-9]*$ ]]; then
+	    echo Port allocation for $SYSTEM ends at $END
+	else
+	    echo Missing port allocation for system $SYSTEM
+	    exit
+	fi
+	if [[ `hostname` =~ [1-9][0-9]* ]]; then
+	    echo Numeric part of hostname is ${BASH_REMATCH[0]}
+	    DEVICE=${BASH_REMATCH[0]}
+	else
+	    echo Port allocation using hostname, but hostname contains no number, exiting
+	    exit
+	fi
+	let sshProxyPort=$START+$DEVICE
+	if [[ $sshProxyPort -gt $END ]]; then
+	    echo Resulting port number $sshProxyPort exceeds allocation limit
+	    exit
+	fi
+    else
+	if [ "$#" -lt 3 ]; then
+	    echo "$0 $COMMAND system device"
+	    if [[ `hostname` =~ [1-9][0-9]* ]]; then
+		echo The number ${BASH_REMATCH[0]} makes a good device name, hostname is `hostname`
+	    fi
+	    exit
+	fi
+        if [[ `hostname` =~ [1-9][0-9]* ]]; then
+            if [ ${BASH_REMATCH[0]} != $DEVICE ]; then
+		echo WARNING: device name is $DEVICE but hostname contains a number ${BASH_REMATCH[0]} that makes a good name
+	    fi
+        fi
+	sshProxyPort=-1
+    fi
+
+    echo device.system = $DEVICE.$SYSTEM
+    echo Proxy port = $sshProxyPort
 
     rm properties.txt
     touch properties.txt
@@ -187,7 +235,7 @@ if [ $COMMAND == "prepare" ]; then
     echo "sshProxyHost=$PROXY"                                     >> properties.txt
     echo "sshProxyUser=$SYSTEM"                                    >> properties.txt
     echo "sshProxyKey=$DEVICE.$SYSTEM.$REALM.sshkey"               >> properties.txt
-    echo "sshProxyPort=-1"                                         >> properties.txt
+    echo "sshProxyPort=$sshProxyPort"                              >> properties.txt
 
     #rm loop.sh
     #touch loop.sh
@@ -267,8 +315,51 @@ if [ $COMMAND == "connect" ]; then
 	exit
     fi
     TARGET=$2
-    echo "Trying to create reverse-SSH tunnel to $TARGET.SYSTEM.REALM" 
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar connect $TARGET $sshPrivateKey
+
+    if [ $ALLOCATOR == hostname ]; then
+	VSTART=ALLOCATION_START_${SYSTEM}
+	VEND=ALLOCATION_END_${SYSTEM}
+	START=${!VSTART}
+	END=${!VEND}
+
+	if [[ $TARGET =~ ^[^@]+ ]]; then
+	    USER=${BASH_REMATCH[0]}
+	else
+	    echo Argument should have the form user@remote-computer
+	    exit
+	fi
+
+	if [[ $TARGET =~ [^@]+$ ]]; then
+	    DEVICE=${BASH_REMATCH[0]}
+	else
+	    echo Argument should have the form user@remote-computer
+	    exit
+	fi
+	
+	if [[ $DEVICE =~ [1-9][0-9]* ]]; then
+	    # all good
+	    echo 
+	else
+	    echo Remote computer name should be a number with no leading zeros
+	    exit
+	fi
+	let targetPort=$START+$DEVICE
+	if [[ $targetPort -gt $END ]]; then
+	    echo Resulting port number $targetPort exceeds allocation limit
+	    exit
+	fi
+
+	ssh \
+	    -o ProxyCommand=\"ssh -W %h:%p $SYSTEM@$sshProxyHost -i $sshProxyKey\" \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -i $sshPrivateKey \
+	    $USER@localhost \
+            -p $targetPort
+    else
+	echo "Trying to create reverse-SSH tunnel to $TARGET.SYSTEM.REALM" 
+	java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar connect $TARGET $sshPrivateKey
+    fi
     exit
 fi
 
