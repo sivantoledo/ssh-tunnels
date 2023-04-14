@@ -38,6 +38,8 @@ if [ "$#" -lt 1 ]; then
     echo "    "
     echo "    ssh-test"
     echo "    "
+    echo "    listen"
+    echo "    "
     echo "    proxy-update-pubs    (on ssh jump host; not for end users)"
     echo "    proxy-prepare-system (on ssh jump host; not for end users)"
     echo "    "
@@ -279,6 +281,22 @@ if [ $COMMAND == "disconnect" ]; then
     echo "Trying to disconnect reverse-SSH tunnel to $TARGET.$SYSTEM.$REALM" 
     java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect $TARGET 
     exit
+fi
+
+if [ $COMMAND == "listen" ]; then
+    while :
+    do
+      if [ $sshProxyPort -eq -1 ]
+      then
+        java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar listen
+      else
+        ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -4 -N -x \
+            -R $sshProxyPort:localhost:22 \
+            -i $sshProxyKey $sshProxyUser@$sshProxyHost
+      fi
+      sleep 10
+    done
 fi
 
 echo "ERROR: Command $COMMAND not known"
