@@ -99,7 +99,7 @@ The same `tunnel.sh` or `tunnel.bat` script runs almost all the commands that th
 
 Next, set up the directory for a particular device or controller and create authentication keys . The commands are exactly under Linux and Windows (with the exception of the script name, of course).
 
-    ./tunnel.sh prepare hula $HOSTNAME
+    ./tunnel.sh prepare hula 333
     ./tunnel.sh ssh-keygen
 
 The first command creates a file called `properties.txt` that specifies all the details of the tunnel. The second generates an SSH key pair and uploads the public key as an issue to GitHub. You can also check if the files have been uploaded to GitHub by issuing the command
