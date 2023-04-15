@@ -200,7 +200,7 @@ That's it. You should be all set to use the tunneling mechanism.
 
 ## Instructions for Realm Administrators
 
-The settings for a realm (proxy host and IoT Core broker that serve multiple systems) are stored in a file `system.txt` that you need to include in the `tunnels.tgz` or `tunnels.zip` files that you distribute to your users. We will assume in the instructions below that your file has the following contnts:
+The settings for a realm (proxy host and IoT Core broker that serve multiple systems) are stored in a file `system.txt` that you need to include in the `tunnels.tgz` or `tunnels.zip` files that you distribute to your users. We will assume in the instructions below that your file has the following contents:
 
     REALM=atlas
     PROXY=tunnels.yourdomain.com
@@ -209,6 +209,14 @@ The settings for a realm (proxy host and IoT Core broker that serve multiple sys
     BROKER=xyz1w2abcdefg-ats.iot.eu-central-1.amazonaws.com
 
 [MISSING INSTRUCTIONS FOR REALMS WITHOUT A BROKER!]
+
+If you do not plan to use a broker, you do not need a value for `BROKER` in `system.txt`, but you do need to define a port allocation method and its parameters. For our example, these would be:
+
+    ALLOCATOR=hostname
+    ALLOCATION_START_hula=61000
+    ALLOCATION_END_hula=61999
+
+The first line specifies that port numbers for remote computers are based on the numeric part of their host name. This number is added to a starting port number, which in this case is 61000 for the `hula` system. So a remote computer named `atlas-333` in this system would use port number 61333 on the proxy.
 
 #### Set Up a Proxy Host
 
