@@ -10,6 +10,36 @@ if exist target\ (
   set JARDIR=.
 )
 
+if "%~1"=="" (
+    echo tunnel command ...
+    echo.
+    echo   commands:
+    echo     gh-auth TOKEN
+    echo     prepare SYSTEM DEVICE
+    echo     ssh-keygen
+    echo     ssh-upload
+    REM echo     ssh-getpub
+    echo     x509-keygen
+    echo     x509-upload
+    echo     x509-getcert
+    echo.     
+    echo     connect
+    echo     disconnect
+    echo.     
+    echo     list
+    echo     delete ISSUE-NUMBER
+    echo.     
+    echo     ssh-test
+    echo.     
+    REM echo     listen
+    REM echo     
+    REM echo     proxy-update-pubs    (on ssh jump host; not for end users)
+    REM echo     proxy-prepare-system (on ssh jump host; not for end users)
+    REM echo     
+    echo     x509-ghsign          (on computer with AWS credentials; not for end users)
+    goto :eof
+)
+
 IF "%1"=="list"         (SET list=true)
 IF "%1"=="delete"       (SET delete=true)
 IF "%1"=="view"         (SET view=true)
@@ -183,7 +213,7 @@ IF "%disconnect%"=="true" (
     ECHO Missing argument: connect TARGET
     goto :eof
   )
-  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect %TARGET%
+  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect %2
   goto :eof
 )
 
