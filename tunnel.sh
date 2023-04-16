@@ -76,12 +76,6 @@ if [ $COMMAND == "delete" ]; then
     exit
 fi
 
-if [ $COMMAND == "x509-ghsign" ]; then
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar sign-from-issues $ISSUES
-    #gh issue list --repo $ISSUES
-    exit
-fi
-
 
 if [ $COMMAND == "proxy-prepare-system" ]; then
     if [ "$#" -lt 2 ]; then
@@ -280,30 +274,6 @@ if [ $COMMAND == "ssh-upload" ]; then
     exit
 fi
 
-if [ $COMMAND == "x509-keygen" ]; then
-  echo openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
-  openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
-  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $certificateRequest
-  #gh issue create --repo $ISSUES --body-file $certificateRequest --title $certificateRequest
-  #echo "Uploaded $certificateRequest"
-  exit
-fi
-
-if [ $COMMAND == "x509-upload" ]; then
-  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $certificateRequest
-  #gh issue create --repo $ISSUES --body-file $certificateRequest --title $certificateRequest
-  #echo "Uploaded $certificateRequest"
-  exit
-fi
-
-if [ $COMMAND == "x509-getcert" ]; then
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-get-issue $ISSUES $certificate
-    #NUMBER=`gh issue list --repo $ISSUES | grep $certificate | cut -f 1`
-    #gh issue view --repo $ISSUES $NUMBER | awk 'BEGIN{P=0}/BEGIN CERTIFICATE/{P=1}{if (P==1) print $0;}/END CERTIFICATE/{P=0}' > $certificate
-    #echo "Downloaded $certificate"
-    exit
-fi
-
 if [ $COMMAND == "ssh-getpub" ]; then
     java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-ssh-authorize $ISSUES $SYSTEM $REALM
     exit
@@ -363,17 +333,6 @@ if [ $COMMAND == "connect" ]; then
     exit
 fi
 
-if [ $COMMAND == "disconnect" ]; then
-    if [ "$#" -lt 2 ]; then
-	echo "$0 $COMMAND remote-computer"
-	exit
-    fi
-    TARGET=$2
-    echo "Trying to disconnect reverse-SSH tunnel to $TARGET.$SYSTEM.$REALM" 
-    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect $TARGET 
-    exit
-fi
-
 if [ $COMMAND == "listen" ]; then
     while :
     do
@@ -390,7 +349,55 @@ if [ $COMMAND == "listen" ]; then
     done
 fi
 
-echo "ERROR: Command $COMMAND not known"
+if [ $sshProxyPort -gt -1 ]; then
+	echo "ERROR: Command $COMMAND not known (or is disconnect or an x509 command, which are not required in this realm)
+fi
+
+if [ $COMMAND == "x509-keygen" ]; then
+  echo openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
+  openssl req -subj /CN=$clientId/OU=$DEVICE/O=$SYSTEM -newkey rsa:4096 -keyout $privateKey -nodes -out $certificateRequest -verbose
+  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $certificateRequest
+  #gh issue create --repo $ISSUES --body-file $certificateRequest --title $certificateRequest
+  #echo "Uploaded $certificateRequest"
+  exit
+fi
+
+if [ $COMMAND == "x509-upload" ]; then
+  java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue $ISSUES $certificateRequest
+  #gh issue create --repo $ISSUES --body-file $certificateRequest --title $certificateRequest
+  #echo "Uploaded $certificateRequest"
+  exit
+fi
+
+if [ $COMMAND == "x509-getcert" ]; then
+    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-get-issue $ISSUES $certificate
+    #NUMBER=`gh issue list --repo $ISSUES | grep $certificate | cut -f 1`
+    #gh issue view --repo $ISSUES $NUMBER | awk 'BEGIN{P=0}/BEGIN CERTIFICATE/{P=1}{if (P==1) print $0;}/END CERTIFICATE/{P=0}' > $certificate
+    #echo "Downloaded $certificate"
+    exit
+fi
+
+# This command does not require properties.txt, but is an x509 command, so we put it here
+if [ $COMMAND == "x509-ghsign" ]; then
+    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar sign-from-issues $ISSUES
+    #gh issue list --repo $ISSUES
+    exit
+fi
+
+
+if [ $COMMAND == "disconnect" ]; then
+    if [ "$#" -lt 2 ]; then
+	echo "$0 $COMMAND remote-computer"
+	exit
+    fi
+    TARGET=$2
+    echo "Trying to disconnect reverse-SSH tunnel to $TARGET.$SYSTEM.$REALM" 
+    java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect $TARGET 
+    exit
+fi
+
+
+echo "ERROR: Command $COMMAND not known 
 exit
 
 
