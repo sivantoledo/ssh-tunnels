@@ -47,11 +47,6 @@ IF "%view%"=="true" (
   goto :eof
 )
 
-IF "%x509ghsign%"=="true" (
-  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar sign-from-issues %ISSUES%
-  goto :eof
-)
-
 IF "%ghauth%"=="true" (
   if "%~2"=="" (
     ECHO gh-auth TOKEN
@@ -62,7 +57,6 @@ IF "%ghauth%"=="true" (
   ::java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar gh-auth %2
   goto :eof
 )
-
 
 SET SYSTEM=%2
 SET DEVICE=%3
@@ -101,8 +95,59 @@ IF "%connect%"=="true" (
     ECHO Missing argument: connect user@target
     goto :eof
   )
-  ::java -jar jars/sivantoledo-iot.jar connect %TARGET% %REALM% %sshPrivateKey%
-  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar connect %TARGET% %sshPrivateKey%
+  
+  if "%ALLOCATOR%"=="hostname" (
+    FOR /F "tokens=1,2 delims=@" %%G IN ("%TARGET%") DO (
+      set USER=%%G
+      set DEVICE=%%H
+    )
+
+   ::echo device !DEVICE!
+   ::echo user   !USER!
+    
+    IF 1!DEVICE! NEQ +1!DEVICE! (
+      echo Missing argument: connect user@target
+      echo target must be a number
+      goto :eof
+    )
+
+    IF "x!DEVICE!"=="x" (
+      echo Missing argument: connect user@target
+      goto :eof
+    )
+
+    call set "VARSTART=ALLOCATION_START_%%SYSTEM%%"
+    call set "VAREND=ALLOCATION_END_%%SYSTEM%%"
+
+    FOR /F "tokens=1,2 delims==" %%G IN (system.txt) DO (
+      ::echo x !START! %%G
+      if !VARSTART!==%%G (set START=%%H)
+      if !VAREND!==%%G   (set END=%%H)
+    )  
+
+    set /A targetPort=!START!+!DEVICE!
+
+    IF !targetPort! GTR !END! (
+      echo target port number !targetPort! is larger that system limit !END!
+      goto :eof
+    )
+
+
+    echo tartget port is !targetPort!
+
+    
+  	ssh ^
+	    -o ProxyCommand="ssh -W %%h:%%p %SYSTEM%@%sshProxyHost% -i %sshProxyKey%" ^
+            -o StrictHostKeyChecking=no ^
+            -o UserKnownHostsFile=NUL ^
+            -i %sshPrivateKey% ^
+	      !USER!@localhost ^
+            -p !targetPort!
+    
+  ) else (
+    ::java -jar jars/sivantoledo-iot.jar connect %TARGET% %REALM% %sshPrivateKey%
+    java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar connect %TARGET% %sshPrivateKey%
+  )
   goto :eof
 )
 
@@ -137,6 +182,11 @@ IF "%sshupload%"=="true" (
   goto :eof
 )
 
+if "%ALLOCATOR%"=="hostname" (
+  ECHO Command "%1" not known (or is an x509 command that is no required in this realm)
+  goto :eof
+)
+
 IF "%x509keygen%"=="true" (
   "\Program Files\FireDaemon OpenSSL 3\bin\openssl.exe" req -subj /CN=%clientId%/OU=%DEVICE%/O=%SYSTEM% -newkey rsa:4096 -keyout %privateKey% -nodes -out %certificateRequest% -verbose
   java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar gh-put-issue %ISSUES% %certificateRequest%                                                                         
@@ -157,5 +207,12 @@ IF "%x509getcert%"=="true" (
   ::echo Downloaded %certificate% 
   goto :eof
 )
+
+REM This command does not need properties.txt, but it is here as an x509 command
+IF "%x509ghsign%"=="true" (
+  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar sign-from-issues %ISSUES%
+  goto :eof
+)
+
 
 ECHO Command "%1" not known
