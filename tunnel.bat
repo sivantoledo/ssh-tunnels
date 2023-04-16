@@ -151,16 +151,6 @@ IF "%connect%"=="true" (
   goto :eof
 )
 
-IF "%disconnect%"=="true" (
-  ECHO CONNECT
-  if "%~2"=="" (
-    ECHO Missing argument: connect TARGET
-    goto :eof
-  )
-  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect %TARGET%
-  goto :eof
-)
-
 IF "%sshtest%"=="true" (
   echo ssh %SYSTEM%@%% -i %sshPrivateKey% whoami
   ssh %SYSTEM%@%PROXY% -i %sshPrivateKey% whoami
@@ -183,7 +173,17 @@ IF "%sshupload%"=="true" (
 )
 
 if "%ALLOCATOR%"=="hostname" (
-  ECHO Command "%1" not known (or is an x509 command that is no required in this realm)
+  ECHO Command "%1" not known (or is disconnect or an x509 command, which are not required in this realm)
+  goto :eof
+)
+
+IF "%disconnect%"=="true" (
+  ECHO CONNECT
+  if "%~2"=="" (
+    ECHO Missing argument: connect TARGET
+    goto :eof
+  )
+  java -jar %JARDIR%/sivantoledo.iot-1.0-jar-with-dependencies.jar disconnect %TARGET%
   goto :eof
 )
 
