@@ -100,8 +100,13 @@ public class TunnelExecutor {
     String tunnelProxyUser   = props.getProperty("sshProxyUser");
     String tunnelProxyKey    = props.getProperty("sshProxyKey");
     int    tunnelProxyPort   = Integer.parseInt( props.getProperty("sshProxyPort","-1") );
+    
+    int port;
+    if (tunnelProxyPort > 0) port = tunnelProxyPort;
+    else                     port = 32768 + (new Random()).nextInt(32767);
 
-    tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, tunnelProxyPort /* -1 requests a random port */, tunnelProxyKey);
+
+    tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, port, tunnelProxyKey);
     
     if (tunnelProxyPort > 0) {
       tunnel.start(); // always-on tunnel, not on demand

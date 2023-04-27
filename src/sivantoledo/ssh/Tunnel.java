@@ -16,7 +16,7 @@ public class Tunnel {
   private final String host;
   private final String user;
   private final String keyFile;
-  private final int    defaultPort;
+  //private final int    defaultPort;
   private       int    port = -1;
   
   private String ext     = null;
@@ -28,10 +28,10 @@ public class Tunnel {
    * host and user are at the proxy computer, so is the keyFile.
    * The port is the port that will be used on the proxy.
    */
-  public Tunnel(String host, String user, int defaultPort, String keyFile) {
+  public Tunnel(String host, String user, int port, String keyFile) {
     this.host        = host;
     this.user        = user;
-    this.defaultPort = defaultPort;
+    this.port        = port;
     this.keyFile     = keyFile;    
     
     os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
@@ -66,8 +66,8 @@ public class Tunnel {
       process = null;
     }
     
-    if (defaultPort > 0) port = defaultPort;
-    else                 port = 32768 + (new Random()).nextInt(32767);
+    //if (defaultPort > 0) port = defaultPort;
+    //else                 port = 32768 + (new Random()).nextInt(32767);
     
     ProcessBuilder builder = 
          new ProcessBuilder("ssh",
@@ -104,7 +104,7 @@ public class Tunnel {
             "-o",""+proxyCommand,
             "-o","StrictHostKeyChecking=no",
             "-o",""+knownHostsFile,
-            "-p",Integer.toString(defaultPort), // weird; should be port I think
+            "-p",Integer.toString(port), // was defaultPort; changed to port on April 27, 2023
 	    "-i",""+remoteKeyFile,
 	    remoteUser+"@localhost");
     
@@ -149,7 +149,7 @@ public class Tunnel {
         ,user
         ,host
         ,keyFile
-        ,defaultPort
+        ,port // changed from defaultPort on April 27, 2023
         ,remoteKeyFile
         );
     
