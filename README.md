@@ -208,6 +208,14 @@ The settings for a realm (proxy host and IoT Core broker that serve multiple sys
     CLIENTID_SUFFIX=.youdomain.com
     BROKER=xyz1w2abcdefg-ats.iot.eu-central-1.amazonaws.com
     ALLOCATION_START_RANDOM=61000
+    
+The last line defines the range of random port numbers that the system will use. The largest number used is always 65535. If you expect to have many simultaneous connections (hundreds) through the proxy, it makes sense to reduce `ALLOCATION_START_RANDOM`. If you do that, verify that the range of random ports is disjoint from the range of ephemeral ports specified in `/proc/sys/net/ipv4/ip_local_port_range`. These range of ephemeral ports can be changed using the command
+
+    sudo sysctl -w net.ipv4.ip_local_port_range="16000 31999"
+    
+or 
+
+    echo 16000 31999 > /proc/sys/net/ipv4/ip_local_port_range
 
 If you do not plan to use a broker, you do not need a value for `BROKER` and `ALLOCATION_START_RANDOM` in `system.txt`, but you do need to define a port allocation method and its parameters. For our example, these would be:
 
