@@ -101,9 +101,11 @@ public class TunnelExecutor {
     String tunnelProxyKey    = props.getProperty("sshProxyKey");
     int    tunnelProxyPort   = Integer.parseInt( props.getProperty("sshProxyPort","-1") );
     
+    int    allocationStartRandom = Integer.parseInt( props.getProperty("allocationStartRandom","61000") );
+    
     int port;
     if (tunnelProxyPort > 0) port = tunnelProxyPort;
-    else                     port = 32768 + (new Random()).nextInt(32767);
+    else                     port = allocationStartRandom + (new Random()).nextInt(65535-allocationStartRandom);
 
 
     tunnel = new Tunnel(tunnelProxyHost, tunnelProxyUser, port, tunnelProxyKey);

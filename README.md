@@ -207,10 +207,9 @@ The settings for a realm (proxy host and IoT Core broker that serve multiple sys
     ISSUES=githubuser/githubrepo
     CLIENTID_SUFFIX=.youdomain.com
     BROKER=xyz1w2abcdefg-ats.iot.eu-central-1.amazonaws.com
+    ALLOCATION_START_RANDOM=61000
 
-[MISSING INSTRUCTIONS FOR REALMS WITHOUT A BROKER!]
-
-If you do not plan to use a broker, you do not need a value for `BROKER` in `system.txt`, but you do need to define a port allocation method and its parameters. For our example, these would be:
+If you do not plan to use a broker, you do not need a value for `BROKER` and `ALLOCATION_START_RANDOM` in `system.txt`, but you do need to define a port allocation method and its parameters. For our example, these would be:
 
     ALLOCATOR=hostname
     ALLOCATION_START_hula=61000

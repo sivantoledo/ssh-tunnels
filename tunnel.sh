@@ -217,6 +217,7 @@ if [ $COMMAND == "prepare" ]; then
     echo "SYSTEM=$SYSTEM"                                          >> properties.txt
     echo "DEVICE=$DEVICE"                                          >> properties.txt
     echo "broker=$BROKER"                                          >> properties.txt
+    echo "allocationStartRandom=$ALLOCATION_START_RANDOM"          >> properties.txt
     echo "control=$REALM/$SYSTEM/$DEVICE/tunnel/control"           >> properties.txt
     echo "state=$REALM/$SYSTEM/$DEVICE/tunnel/state"               >> properties.txt
     echo "clientId=$DEVICE.$SYSTEM.$REALM$CLIENTID_SUFFIX"         >> properties.txt
