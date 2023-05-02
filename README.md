@@ -198,6 +198,26 @@ and then run the command
 
 That's it. You should be all set to use the tunneling mechanism.
 
+#### A Security Recommendation
+
+If an attacker gains access to a controlling computer (e.g., somebody steals your laptop and is able to use it, or somebody hacks remotely into your desktop), they can use the tunneling mechanism to try to connect to remote computers. If connecting to remote computers does not require a password in addition to the private key of the controlling computer, it will difficult or impossible for the attacker to connect to remote computers. Therefore, we recommend that you configure remote computers so that they require a password to connect in addition to the private key. 
+
+To do that, add the line
+
+    AuthenticationMethods publickey,password
+
+to `/etc/sshd/sshd_config` on remote computers and restart the SSH sevice using the command
+
+    sudo service sshd restart
+    
+If you also want to allow password-only access (without a private key), use
+
+    AuthenticationMethods publickey,password password
+   
+But be aware that this is less secure. We recommend that once the key+password method works, you disallow password-only access.
+    
+We recommend that you require a password 
+
 ## Instructions for Realm Administrators
 
 The settings for a realm (proxy host and IoT Core broker that serve multiple systems) are stored in a file `system.txt` that you need to include in the `tunnels.tgz` or `tunnels.zip` files that you distribute to your users. We will assume in the instructions below that your file has the following contents:
