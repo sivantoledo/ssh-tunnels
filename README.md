@@ -215,8 +215,6 @@ If you also want to allow password-only access (without a private key), use
     AuthenticationMethods publickey,password password
    
 But be aware that this is less secure. We recommend that once the key+password method works, you disallow password-only access.
-    
-We recommend that you require a password 
 
 ## Instructions for Realm Administrators
 
