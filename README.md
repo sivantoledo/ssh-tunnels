@@ -303,9 +303,9 @@ It will download all the public keys and will add them to the `~/.ssh/authorized
 
 Once system administrators add certificate signing requests to the issues repository, run on the signing computer the command 
 
-    ./tunnel.sh x509-ghsign
+    ./tunnel.sh x509-ghsign atlas
 
-This command will download all the new certificate signing requests, will ask AWS IoT Core to sign them, and will uploaded the signed certificates back to the GitHub repository. 
+(the argumnet is the name of the realm). This command will download all the new certificate signing requests, will ask AWS IoT Core to sign them, and will uploaded the signed certificates back to the GitHub repository. 
 
 ## Analysis of Costs
 
