@@ -235,8 +235,7 @@ You then need to pack this file along with
     
 in an archive that your users will open in their `tunnel` directory. The instructions for preparing your realm's `system.txt` file follow.
 
-#### Preparing the Configuration File for the Realm
-     `
+#### Preparing the Configuration File for the Realm 
 
 The settings for a realm (proxy host and IoT Core broker that serve multiple systems) are stored in a file `system.txt` that you need to include in the `tunnels.tgz` or `tunnels.zip` files that you distribute to your users. We will assume in the instructions below that your file has the following contents:
 
