@@ -218,6 +218,26 @@ But be aware that this is less secure. We recommend that once the key+password m
 
 ## Instructions for Realm Administrators
 
+#### Building and Packaging the Software
+
+To build the software (on Linux), install a Java Development Kit (JDK) and Maven, a build tool. On Ubuntu, you can do so with the commands:
+
+    sudo apt install default-jdk
+    sudo apt install maven
+
+Once these are installed, run the script `build.sh` which runs Maven and builds the Java program `targets/sivantoledo.iot-1.0-jar-with-dependencies.jar`.
+
+You then need to pack this file along with 
+
+    tunnel.sh
+    tunnel.bat
+    system.txt
+    
+in an archive that your users will open in their `tunnel` directory. The instructions for preparing your realm's `system.txt` file follow.
+
+#### Preparing the Configuration File for the Realm
+     `
+
 The settings for a realm (proxy host and IoT Core broker that serve multiple systems) are stored in a file `system.txt` that you need to include in the `tunnels.tgz` or `tunnels.zip` files that you distribute to your users. We will assume in the instructions below that your file has the following contents:
 
     REALM=atlas
