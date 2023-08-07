@@ -2,6 +2,8 @@
 
 [Sivan Toledo](https://www.cs.tau.ac.il/~stoledo), Tel Aviv University, 2023
 
+([An article describing this software](https://doi.org/10.1016/j.simpa.2023.100545) has been published in Software Impacts; please cite the article, not this GitHub repository.)
+
 This software is designed to provide a reliable, secure, low-cost, and easy-to-set-up mechanism to connect to a large number of remote computers using SSH connections. In particular, it works even if the remote computers are behind firewalls or NAT routers or any other mechanism that does not allow incoming connections. It does not rely on a VPN or dynamic DNS.
 
 The mechanism does rely on a proxy or jump host with a fixed IP address that is not behind a firewall or NAT, and optionally on an Amazon Web Services (AWS) IoT Core broker, which is essentially a secure MQTT server. I use a AWS Lightsail virtual server as a proxy host, at a cost of $5 per month, but any virtual or physical server that can be accessed through SSH from the Internet will work. The cost of the AWS IoT Core service is about $0.05 (5 cents) per remote computer per year.
