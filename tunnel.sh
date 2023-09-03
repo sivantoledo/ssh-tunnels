@@ -96,7 +96,7 @@ if [ $COMMAND == "proxy-prepare-system" ]; then
 fi
 
 if [ $COMMAND == "proxy-update-pubs" ]; then
-    sudo java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-ssh-authorize-proxy $ISSUES $2
+    sudo java -jar sivantoledo.iot-1.0-jar-with-dependencies.jar gh-ssh-authorize-proxy $ISSUES $REALM
     exit
 fi
 
