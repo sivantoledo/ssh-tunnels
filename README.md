@@ -208,7 +208,7 @@ To do that, add the line
 
     AuthenticationMethods publickey,password
 
-to `/etc/sshd/sshd_config` on remote computers and restart the SSH sevice using the command
+to `/etc/ssh/sshd_config` on remote computers and restart the SSH sevice using the command
 
     sudo service sshd restart
     
