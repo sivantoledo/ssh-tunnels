@@ -164,9 +164,9 @@ To download the certificates that enable communication with the broker, run on b
 
 Remote computers listen for `connect` and `disconnect` commands by running `./tunnel.sh listen` in the `tunnel` directory. Run it once interactively on each remote computer for testing. 
 
-But you also must ensure that it runs continuously. On Ubuntu Linux, you can do that using the following `/etc/rc.local` script (also make sure it has execute permissions):
+But you also must ensure that it runs continuously. On Ubuntu Linux, you can do that using the following `/etc/rc.local` script (also make sure it has execute permissions). The first line, `#!/bin/bash`, should be the first line in the file; if the file already exists and has this line, or an invocation of another shell program, you do not need to add this line.
 
-    #/bin/bash
+    #!/bin/bash
     
     /sbin/start-stop-daemon 
       --start --background \
