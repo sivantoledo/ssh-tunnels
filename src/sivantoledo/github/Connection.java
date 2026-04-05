@@ -8,8 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import java.net.http.HttpClient;
+
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.extras.HttpClientGitHubConnector;   // <-- add this import
 
 public class Connection {
   
@@ -27,6 +30,22 @@ public class Connection {
     
     github = new GitHubBuilder().withOAuthToken(token).build();
     
+    /*
+    HttpClient httpClient = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_1_1)
+        .build();
+    
+    github = new GitHubBuilder()
+        .withOAuthToken(token)     // or .withPassword(), etc.
+        .withConnector(new HttpClientGitHubConnector(httpClient))
+       .build();
+
+    github = new GitHubBuilder()
+        .withOAuthToken(token)
+        .withConnector(new HttpClientGitHubConnector())
+        .build();
+        */
+
     String ghLogin = github.getMyself().getLogin();
     String ghEmail = github.getMyself().getEmail();
   
