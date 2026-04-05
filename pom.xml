@@ -35,7 +35,7 @@
     <dependency>
 	    <groupId>org.kohsuke</groupId>
  	   <artifactId>github-api</artifactId>
-  	  <version>1.314</version>
+  	  <version>1.330</version>
 	</dependency>
     
     <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-iot-device-sdk-java -->
